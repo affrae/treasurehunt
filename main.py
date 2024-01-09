@@ -101,12 +101,12 @@ def processGameOver(reason, win):
     print("Game Over")
 
 
-def processGameStage(gameArray, index):
+def processChapter(gameArray, index):
     command = 'none'
     if 'chapter' in gameArray[index]:
         command = lowerInput(gameArray[index]['chapter'])
         if command in gameArray[index]['validCommands']:
-            processGameStage(gameArray, gameArray[index]['validCommands'][command])
+            processChapter(gameArray, gameArray[index]['validCommands'][command])
     reason = "For some generic reason..."
     win = False
     if 'gameEndReason' in gameArray[index]:
@@ -117,8 +117,8 @@ def processGameStage(gameArray, index):
     exit()
 
 
-def start():
-    processGameStage(gameArray, 0)
+def startGame():
+    processChapter(gameArray, 0)
 
 
-start()
+startGame()
