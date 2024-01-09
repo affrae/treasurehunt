@@ -186,6 +186,5 @@ def processChapter(book, chapter):
         win = book[chapter]['didTheyWin']
     processGameOver(book,reason, win)
     
-
 book = gameBook
 startGame(book)
