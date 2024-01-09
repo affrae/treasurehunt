@@ -135,8 +135,6 @@ Inside you find a treasure chest.
 You open it and find a pile of gold!""",
         'didTheyWin': True
     }
-
-
 }
 
 
