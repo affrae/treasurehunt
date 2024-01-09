@@ -85,9 +85,9 @@ def gameOver(reason, win):
 def processGame(gameArray, index):
     choice = 'none'
     if '0' in gameArray[index]:
-        choice = lowerInput(gameArray[index]['0'])
-    if choice in gameArray[index]:
-        processGame(gameArray, gameArray[index][choice])
+      choice = lowerInput(gameArray[index]['0'])
+      if choice in gameArray[index]:
+          processGame(gameArray, gameArray[index][choice])
     reason = "For some generic reason..."
     win = False
     if '-1' in gameArray[index]:
