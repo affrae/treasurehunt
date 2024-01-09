@@ -91,15 +91,52 @@ Which colour do you choose?""",
         'didTheyWin': False
     },
     'At the yellow door': {
-        'validCommands': {},
-        'gameEndReason': "You open the yellow door.\nYou find the treasure!",
-        'didTheyWin': True
+        'chapterContent': """You walk up to the yellow door.
+All over a sudden an Orc rushes out from a nearby bush and tries to attack you!
+You can 'fight' or 'retreat'.""",        
+        'validCommands': {
+            'fight': 'Fight the orc',
+            'retreat': 'At the island'
+        },
+        'gameEndReason': "You did not choose to fight or retreat.",
+        'didTheyWin': False
     },
     'At the blue door': {
         'validCommands': {},
         'gameEndReason': "You open the blue door.\nYou freeze to death.",
         'didTheyWin': False
+    },
+    'Fight the orc': {
+        'chapterContent': """You decide to fight the orc.
+Have at it!!!""",        
+        'fight': 50,
+        'win':'You beat the orc!',
+        'lose':'The orc beats you!',
+    },
+    'You beat the orc!': {
+        'chapterContent': """You beat the orc and he runs away.
+You can 'open' the yellow door or 'return' to the island.""",
+        'validCommands': {
+            'open': 'Open the yellow door',
+            'return': 'At the island'
+        },
+        'gameEndReason': "You didn't choose to open or return.",
+        'didTheyWin': False
+    },
+    'The orc beats you!': {
+        'validCommands': {},
+        'gameEndReason': "You lose the fight and die.",
+        'didTheyWin': False
+    },
+    'Open the yellow door': {
+        'validCommands': {},
+        'gameEndReason': """You open the yellow door.
+Inside you find a treasure chest.
+You open it and find a pile of gold!""",
+        'didTheyWin': True
     }
+
+
 }
 
 
@@ -108,21 +145,37 @@ def lowerInput(prompt):
     return input(f"\n{prompt}\n> ").lower()
 
 
-def processGameOver(reason, win):
-    print(reason)
+def processGameOver(book,reason, win):
+    print(f"\n{reason}\n")
     if win == True:
         print("You Win!")
     else:
         print("You Lose!")
     print("Game Over")
+    if lowerInput("Do you want to play again? (y/n)") == 'y':
+        startGame(book)
+    else:
+        print("\nGoodbye!\n")
+        exit()
 
 
 def startGame(book):
     processChapter(book, 'At the crossroads')
 
+import random
+
 def processChapter(book, chapter):
     command = 'none'
-    if 'chapterContent' in book[chapter]:
+    if 'fight' in book[chapter]:
+        if 'chapterContent' in book[chapter]:
+            print(f"\n{book[chapter]['chapterContent']}\n")
+        diceRoll = random.randint(1, 100)
+        print(f"Your chance to win is {book[chapter]['fight']} percent. You rolled a {diceRoll}")
+        if diceRoll <= book[chapter]['fight']:
+            processChapter(book, book[chapter]['win'])
+        else:
+            processChapter(book, book[chapter]['lose'])
+    elif 'chapterContent' in book[chapter]:
         command = lowerInput(book[chapter]['chapterContent'])
         nextChapter = book[chapter]['validCommands'].get(command)
         if nextChapter and nextChapter in book:
@@ -133,8 +186,8 @@ def processChapter(book, chapter):
         reason = book[chapter]['gameEndReason']
     if 'didTheyWin' in book[chapter]:
         win = book[chapter]['didTheyWin']
-    processGameOver(reason, win)
-    exit()
+    processGameOver(book,reason, win)
+    
 
 book = gameBook
 startGame(book)
