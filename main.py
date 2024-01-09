@@ -33,63 +33,73 @@ def lowerInput(question):
     return input(f"{question} ").lower()
 
 
-gameArray = [{
-    'chapter':
-    "You are at a crossroad.\nWhere do you want to go? Type 'left' or 'right'",
-    'validCommands': {
-        'left': 1,
-        'right': 2
+gameBook = {
+    'At the crossroads': {
+        'chapterContent':
+        "You are at a crossroad.\nWhere do you want to go? Type 'left' or 'right'",
+        'validCommands': {
+            'left': 'At the lake',
+            'right': 'At the chasm'
+        },
+        'gameEndReason': "You didn't choose a direction.",
+        'didTheyWin': False
     },
-    'gameEndReason': "You didn't choose a direction.",
-    "-2": False
-}, {
-    'chapter':
-    "You come to a lake.\nThere is an island in the middle of the lake.\nYou can 'swim' across or 'wait' for a boat.",
-    'validCommands': {
-        'swim': 4,
-        'wait': 5
+    'At the lake': {
+        'chapterContent':
+        "You come to a lake.\nThere is an island in the middle of the lake.\nYou can 'swim' across or 'wait' for a boat.",
+        'validCommands': {
+            'swim': 'Drowned',
+            'wait': 'At the island'
+        },
+        'gameEndReason': "You didn't choose to swim or wait.",
+        'didTheyWin': False
     },
-    'gameEndReason': "You didn't choose to swim or wait.",
-    'didTheyWin': False
-}, {
-    'chapter': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
-    'validCommands': {
-        'leap': 3,
-        'return': 0
+    'At the chasm': {
+        'chapterContent': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
+        'validCommands': {
+            'leap': 'Fell into chasm',
+            'return': 'At the crossroads'
+        },
+        'gameEndReason': "You didn't choose to leap or return.",
+        'didTheyWin': False
     },
-    'gameEndReason': "You didn't choose to leap or return.",
-    'didTheyWin': False
-}, {
-    'validCommands': {},
-    'gameEndReason': "You fall down into what you now know to be a bottomless chasm.",
-    'didTheyWin': False
-},{
-    'validCommands': {},
-    'gameEndReason': "You Drown.",
-    'didTheyWin': False
-}, {
-    'chapter':
-    "You arrive at the island unharmed.\nThere is a house with 3 doors.\nOne red, one yellow and one blue.\nWhich colour do you choose?",
-    'validCommands': {
-        'red': 6,
-        'yellow': 7,
-        'blue': 8
+    'Fell into chasm': {
+        'validCommands': {},
+        'gameEndReason': "You fall down into what you now know to be a bottomless chasm.",
+        'didTheyWin': False
     },
-    'gameEndReason': "You didn't choose a door.",
-    'didTheyWin': False
-}, {
-    'validCommands': {},
-    'gameEndReason': "You open the red door.\nYou burn to death.",
-    'didTheyWin': False
-}, {
-    'validCommands': {},
-    'gameEndReason': "You open the yellow door.\nYou find the treasure!",
-    'didTheyWin': True
-}, {
-    'validCommands': {},
-    'gameEndReason': "You open the blue door.\nYou freeze to death.",
-    'didTheyWin': False
-}]
+    'Drowned': {
+        'validCommands': {},
+        'gameEndReason': "You Drown.",
+        'didTheyWin': False
+    },
+    'At the island': {
+        'chapterContent':
+        "You arrive at the island unharmed.\nThere is a house with 3 doors.\nOne red, one yellow and one blue.\nWhich colour do you choose?",
+        'validCommands': {
+            'red': 'At the red door',
+            'yellow': 'At the yellow door',
+            'blue': 'At the blue door'
+        },
+        'gameEndReason': "You didn't choose a door.",
+        'didTheyWin': False
+    },
+    'At the red door': {
+        'validCommands': {},
+        'gameEndReason': "You open the red door.\nYou burn to death.",
+        'didTheyWin': False
+    },
+    'At the yellow door': {
+        'validCommands': {},
+        'gameEndReason': "You open the yellow door.\nYou find the treasure!",
+        'didTheyWin': True
+    },
+    'At the blue door': {
+        'validCommands': {},
+        'gameEndReason': "You open the blue door.\nYou freeze to death.",
+        'didTheyWin': False
+    }
+}
 
 
 def processGameOver(reason, win):
@@ -101,24 +111,24 @@ def processGameOver(reason, win):
     print("Game Over")
 
 
-def processChapter(gameArray, index):
+def startGame(book):
+    processChapter(book, 'At the crossroads')
+
+def processChapter(book, chapter):
     command = 'none'
-    if 'chapter' in gameArray[index]:
-        command = lowerInput(gameArray[index]['chapter'])
-        if command in gameArray[index]['validCommands']:
-            processChapter(gameArray, gameArray[index]['validCommands'][command])
+    if 'chapterContent' in book[chapter]:
+        command = lowerInput(book[chapter]['chapterContent'])
+        nextChapter = book[chapter]['validCommands'].get(command)
+        if nextChapter and nextChapter in book:
+            processChapter(book, nextChapter)
     reason = "For some generic reason..."
     win = False
-    if 'gameEndReason' in gameArray[index]:
-        reason = gameArray[index]['gameEndReason']
-    if 'didTheyWin' in gameArray[index]:
-        win = gameArray[index]['didTheyWin']
+    if 'gameEndReason' in book[chapter]:
+        reason = book[chapter]['gameEndReason']
+    if 'didTheyWin' in book[chapter]:
+        win = book[chapter]['didTheyWin']
     processGameOver(reason, win)
     exit()
 
-
-def startGame():
-    processChapter(gameArray, 0)
-
-
-startGame()
+book = gameBook
+startGame(book)
