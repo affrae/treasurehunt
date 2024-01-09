@@ -34,52 +34,65 @@ def lowerInput(question):
 
 
 gameArray = [{
-    '0':
+    'chapter':
     "You are at a crossroad.\nWhere do you want to go? Type 'left' or 'right'",
-    'left': 1,
-    'right': 2,
-    '-1': "You didn't choose a direction.",
+    'validCommands': {
+        'left': 1,
+        'right': 2
+    },
+    'gameEndReason': "You didn't choose a direction.",
     "-2": False
 }, {
-    '0':
+    'chapter':
     "You come to a lake.\nThere is an island in the middle of the lake.\nYou can 'swim' across or 'wait' for a boat.",
-    'swim': 4,
-    'wait': 5,
-    '-1': "You didn't choose to swim or wait.",
-    '-2': False
+    'validCommands': {
+        'swim': 4,
+        'wait': 5
+    },
+    'gameEndReason': "You didn't choose to swim or wait.",
+    'didTheyWin': False
 }, {
-    '0': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
-    'leap': 3,
-    'return': 0,
-    '-1': "You didn't choose to leap or return.",
-    '-2': False
+    'chapter': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
+    'validCommands': {
+        'leap': 3,
+        'return': 0
+    },
+    'gameEndReason': "You didn't choose to leap or return.",
+    'didTheyWin': False
 }, {
-    '-1': "You fall down into what you now know to be a bottomless chasm.",
-    '-2': False
+    'validCommands': {},
+    'gameEndReason': "You fall down into what you now know to be a bottomless chasm.",
+    'didTheyWin': False
 },{
-    '-1': "You Drown.",
-    '-2': False
+    'validCommands': {},
+    'gameEndReason': "You Drown.",
+    'didTheyWin': False
 }, {
-    '0':
+    'chapter':
     "You arrive at the island unharmed.\nThere is a house with 3 doors.\nOne red, one yellow and one blue.\nWhich colour do you choose?",
-    'red': 6,
-    'yellow': 7,
-    'blue': 8,
-    '-1': "You didn't choose a door.",
-    '-2': False
+    'validCommands': {
+        'red': 6,
+        'yellow': 7,
+        'blue': 8
+    },
+    'gameEndReason': "You didn't choose a door.",
+    'didTheyWin': False
 }, {
-    '-1': "You open the red door.\nYou burn to death.",
-    '-2': False
+    'validCommands': {},
+    'gameEndReason': "You open the red door.\nYou burn to death.",
+    'didTheyWin': False
 }, {
-    '-1': "You open the yellow door.\nYou find the treasure!",
-    '-2': True
+    'validCommands': {},
+    'gameEndReason': "You open the yellow door.\nYou find the treasure!",
+    'didTheyWin': True
 }, {
-    '-1': "You open the blue door.\nYou freeze to death.",
-    '-2': False
+    'validCommands': {},
+    'gameEndReason': "You open the blue door.\nYou freeze to death.",
+    'didTheyWin': False
 }]
 
 
-def gameOver(reason, win):
+def processGameOver(reason, win):
     print(reason)
     if win == True:
         print("You Win!")
@@ -88,24 +101,24 @@ def gameOver(reason, win):
     print("Game Over")
 
 
-def processGame(gameArray, index):
-    choice = 'none'
-    if '0' in gameArray[index]:
-      choice = lowerInput(gameArray[index]['0'])
-      if choice in gameArray[index]:
-          processGame(gameArray, gameArray[index][choice])
+def processGameStage(gameArray, index):
+    command = 'none'
+    if 'chapter' in gameArray[index]:
+        command = lowerInput(gameArray[index]['chapter'])
+        if command in gameArray[index]['validCommands']:
+            processGameStage(gameArray, gameArray[index]['validCommands'][command])
     reason = "For some generic reason..."
     win = False
-    if '-1' in gameArray[index]:
-        reason = gameArray[index]['-1']
-    if '-2' in gameArray[index]:
-        win = gameArray[index]['-2']
-    gameOver(reason, win)
+    if 'gameEndReason' in gameArray[index]:
+        reason = gameArray[index]['gameEndReason']
+    if 'didTheyWin' in gameArray[index]:
+        win = gameArray[index]['didTheyWin']
+    processGameOver(reason, win)
     exit()
 
 
 def start():
-    processGame(gameArray, 0)
+    processGameStage(gameArray, 0)
 
 
 start()
