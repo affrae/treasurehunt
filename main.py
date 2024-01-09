@@ -28,7 +28,8 @@ print("Your mission is to find the treasure.")
 
 #Write your code below this line 👇
 
-gameBook = {
+treasureIsland = {
+    'start': 'At the crossroads',
     'At the crossroads': {
         'chapterContent': """You are at a crossroad.
 Where do you want to go? Type 'left' or 'right'""",
@@ -143,52 +144,65 @@ def lowerInput(prompt):
     return input(f"\n{prompt}\n> ").lower()
 
 
-def processGameOver(book,reason, win):
+def processGameOver(book, reason, win, character):
     print(f"\n{reason}\n")
     if win == True:
         print("You Win!")
     else:
         print("You Lose!")
+    print(f"Your character ended at level {character['level']} with gear: {character['gear']}")
     print("Game Over")
-    if lowerInput("Do you want to play again? (y/n)") == 'y':
-        startGame(book)
-    else:
-        print("\nGoodbye!\n")
-        exit()
-
-
-def startGame(book):
-    processChapter(book, 'At the crossroads')
 
 import random
 
-def processFight(book, chapter):
+def processFight(book, chapter, character):
     diceRoll = random.randint(1, 100)
     print(f"Your chance to win is {book[chapter]['fight']} percent. You rolled a {diceRoll}")
     if diceRoll <= book[chapter]['fight']:
-        processChapter(book, book[chapter]['win'])
+        return book[chapter]['win']
     else:
-        processChapter(book, book[chapter]['lose'])
+        return book[chapter]['lose']
 
-def processChapter(book, chapter):
-    command = 'none'
-    if 'fight' in book[chapter]:
-        chapterContent = book[chapter].get('chapterContent')
-        if chapterContent:
-            print(f"\n{chapterContent}\n")
-        processFight(book, chapter)
-    elif 'chapterContent' in book[chapter]:
-        command = lowerInput(book[chapter]['chapterContent'])
-        nextChapter = book[chapter]['validCommands'].get(command)
-        if nextChapter:
-            processChapter(book, nextChapter)
-    reason = "For some generic reason..."
-    win = False
-    if 'gameEndReason' in book[chapter]:
-        reason = book[chapter]['gameEndReason']
-    if 'didTheyWin' in book[chapter]:
-        win = book[chapter]['didTheyWin']
-    processGameOver(book,reason, win)
+def playBook(book, chapter, character):
+    while True:
+        while True:
+            if 'fight' in book[chapter]:
+                chapterContent = book[chapter].get('chapterContent')
+                if chapterContent:
+                    print(f"\n{chapterContent}\n")
+                chapter = processFight(book, chapter, character)
+            elif 'chapterContent' in book[chapter]:
+                command = lowerInput(book[chapter]['chapterContent'])
+                nextChapter = book[chapter]['validCommands'].get(command)
+                if nextChapter:
+                    chapter = nextChapter
+                    continue
+            reason = "For some generic reason..."
+            win = False
+            if 'gameEndReason' in book[chapter]:
+                reason = book[chapter]['gameEndReason']
+            if 'didTheyWin' in book[chapter]:
+                win = book[chapter]['didTheyWin']
+            processGameOver(book, reason, win, character)
+            break
+        if lowerInput("Do you want to play again? (y/n)") != 'y':
+            print("\nGoodbye!\n")
+            break
+        else:
+            chapter = 'At the crossroads'  # Reset to the starting chapter
+            character = createCharacter()  # Create a new character
+
+def startGame(book):
+    character = createCharacter()
+    startingChapter = book['start']
+    playBook(book, startingChapter, character)
+
+def createCharacter():
+    return {
+        'level': 1,
+        'gear': []
+    }
     
-book = gameBook
+book = treasureIsland
+
 startGame(book)
