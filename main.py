@@ -162,21 +162,25 @@ def startGame(book):
 
 import random
 
+def processFight(book, chapter):
+    diceRoll = random.randint(1, 100)
+    print(f"Your chance to win is {book[chapter]['fight']} percent. You rolled a {diceRoll}")
+    if diceRoll <= book[chapter]['fight']:
+        processChapter(book, book[chapter]['win'])
+    else:
+        processChapter(book, book[chapter]['lose'])
+
 def processChapter(book, chapter):
     command = 'none'
     if 'fight' in book[chapter]:
-        if 'chapterContent' in book[chapter]:
-            print(f"\n{book[chapter]['chapterContent']}\n")
-        diceRoll = random.randint(1, 100)
-        print(f"Your chance to win is {book[chapter]['fight']} percent. You rolled a {diceRoll}")
-        if diceRoll <= book[chapter]['fight']:
-            processChapter(book, book[chapter]['win'])
-        else:
-            processChapter(book, book[chapter]['lose'])
+        chapterContent = book[chapter].get('chapterContent')
+        if chapterContent:
+            print(f"\n{chapterContent}\n")
+        processFight(book, chapter)
     elif 'chapterContent' in book[chapter]:
         command = lowerInput(book[chapter]['chapterContent'])
         nextChapter = book[chapter]['validCommands'].get(command)
-        if nextChapter and nextChapter in book:
+        if nextChapter:
             processChapter(book, nextChapter)
     reason = "For some generic reason..."
     win = False
