@@ -54,7 +54,7 @@ gameArray = [{
     '-1': "You didn't choose to leap or return.",
     '-2': False
 }, {
-    '-1': "You fall down the chasm.",
+    '-1': "You fall down into what you now know to be a bottomless chasm.",
     '-2': False
 },{
     '-1': "You Drown.",
