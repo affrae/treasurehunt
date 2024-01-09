@@ -114,7 +114,7 @@ Have at it!!!""",
         'lose':'The orc beats you!',
     },
     'You beat the orc!': {
-        'chapterContent': """You beat the orc and he runs away.
+        'chapterContent': """You beat the orc and they run away.
 You can 'open' the yellow door or 'return' to the island.""",
         'validCommands': {
             'open': 'Open the yellow door',
