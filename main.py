@@ -43,22 +43,28 @@ gameArray = [{
 }, {
     '0':
     "You come to a lake.\nThere is an island in the middle of the lake.\nYou can 'swim' across or 'wait' for a boat.",
-    'swim': 3,
-    'wait': 4,
+    'swim': 4,
+    'wait': 5,
     '-1': "You didn't choose to swim or wait.",
     '-2': False
 }, {
-    '-1': "You fall down a hole.",
+    '0': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
+    'leap': 3,
+    'return': 0,
+    '-1': "You didn't choose to leap or return.",
     '-2': False
 }, {
+    '-1': "You fall down the chasm.",
+    '-2': False
+},{
     '-1': "You Drown.",
     '-2': False
 }, {
     '0':
     "You arrive at the island unharmed.\nThere is a house with 3 doors.\nOne red, one yellow and one blue.\nWhich colour do you choose?",
-    'red': 5,
-    'yellow': 6,
-    'blue': 7,
+    'red': 6,
+    'yellow': 7,
+    'blue': 8,
     '-1': "You didn't choose a door.",
     '-2': False
 }, {
