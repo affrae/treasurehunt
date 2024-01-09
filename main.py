@@ -28,15 +28,10 @@ print("Your mission is to find the treasure.")
 
 #Write your code below this line 👇
 
-
-def lowerInput(question):
-    return input(f"{question} ").lower()
-
-
 gameBook = {
     'At the crossroads': {
-        'chapterContent':
-        "You are at a crossroad.\nWhere do you want to go? Type 'left' or 'right'",
+        'chapterContent': """You are at a crossroad.
+Where do you want to go? Type 'left' or 'right'""",
         'validCommands': {
             'left': 'At the lake',
             'right': 'At the chasm'
@@ -45,8 +40,9 @@ gameBook = {
         'didTheyWin': False
     },
     'At the lake': {
-        'chapterContent':
-        "You come to a lake.\nThere is an island in the middle of the lake.\nYou can 'swim' across or 'wait' for a boat.",
+        'chapterContent': """You come to a lake.
+There is an island in the middle of the lake.
+You can 'swim' across or 'wait' for a boat.""",
         'validCommands': {
             'swim': 'Drowned',
             'wait': 'At the island'
@@ -55,7 +51,10 @@ gameBook = {
         'didTheyWin': False
     },
     'At the chasm': {
-        'chapterContent': "You see a huge chasm in the ground, stretching to your left and right for as far as you can see.\nThe path seems to continue on the other side.\nMaybe the bridge fell in?\nYou can 'leap' across or 'return' to the crossroad.",
+        'chapterContent': """You see a huge chasm in the ground, stretching to your left and right for as far as you can see.
+The path seems to continue on the other side.
+Maybe the bridge fell in?
+You can 'leap' across or 'return' to the crossroad.""",
         'validCommands': {
             'leap': 'Fell into chasm',
             'return': 'At the crossroads'
@@ -74,8 +73,10 @@ gameBook = {
         'didTheyWin': False
     },
     'At the island': {
-        'chapterContent':
-        "You arrive at the island unharmed.\nThere is a house with 3 doors.\nOne red, one yellow and one blue.\nWhich colour do you choose?",
+        'chapterContent': """You arrive at the island unharmed.
+There is a house with 3 doors.
+One red, one yellow and one blue.
+Which colour do you choose?""",
         'validCommands': {
             'red': 'At the red door',
             'yellow': 'At the yellow door',
@@ -100,6 +101,11 @@ gameBook = {
         'didTheyWin': False
     }
 }
+
+
+
+def lowerInput(prompt):
+    return input(f"\n{prompt}\n> ").lower()
 
 
 def processGameOver(reason, win):
