@@ -429,6 +429,7 @@ def playBook(book, chapter, character):
                     print("\nGoodbye!\n")
                     break
                 else:
+                    book = copy.deepcopy(treasureIsland)
                     chapter = book['start']  # Reset to the starting chapter
                     character = createCharacter()  # Create a new character
     except QuitException:
