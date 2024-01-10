@@ -32,13 +32,11 @@ treasureIsland = {
     'start': 'At the crossroads',
     'At the crossroads': {
         'chapterContent': """You are at a crossroad.
-Where do you want to go? Type 'left' or 'right'""",
+You can go 'left' or 'right'""",
         'validCommands': {
             'left': 'At the lake',
             'right': 'At the chasm'
-        },
-        'gameEndReason': "You didn't choose a direction.",
-        'didTheyWin': False
+        }
     },
     'At the lake': {
         'chapterContent': """You come to a lake.
@@ -47,9 +45,7 @@ You can 'swim' across or 'wait' for a boat.""",
         'validCommands': {
             'swim': 'Drowned',
             'wait': 'At the island'
-        },
-        'gameEndReason': "You didn't choose to swim or wait.",
-        'didTheyWin': False
+        }
     },
     'At the chasm': {
         'chapterContent': """You see a huge chasm in the ground, stretching to your left and right for as far as you can see.
@@ -59,9 +55,7 @@ You can 'leap' across or 'return' to the crossroad.""",
         'validCommands': {
             'leap': 'Fell into chasm',
             'return': 'At the crossroads'
-        },
-        'gameEndReason': "You didn't choose to leap or return.",
-        'didTheyWin': False
+        }
     },
     'Fell into chasm': {
         'validCommands': {},
@@ -76,15 +70,13 @@ You can 'leap' across or 'return' to the crossroad.""",
     'At the island': {
         'chapterContent': """You arrive at the island unharmed.
 There is a house with 3 doors.
-One red, one yellow and one blue.
-Which colour do you choose?""",
+One 'red', one 'yellow' and one 'blue'.""",
+        'prompt': "Which colour door do you choose to open?",
         'validCommands': {
             'red': 'At the red door',
             'yellow': 'At the yellow door',
             'blue': 'At the blue door'
         },
-        'gameEndReason': "You didn't choose a door.",
-        'didTheyWin': False
     },
     'At the red door': {
         'validCommands': {},
@@ -99,8 +91,6 @@ You can 'fight' or 'retreat'.""",
             'fight': 'Fight the orc',
             'retreat': 'At the island'
         },
-        'gameEndReason': "You did not choose to fight or retreat.",
-        'didTheyWin': False
     },
     'At the blue door': {
         'validCommands': {},
@@ -123,8 +113,6 @@ You can 'open' the yellow door or 'return' to the island.""",
             'open': 'Open the yellow door',
             'return': 'At the island'
         },
-        'gameEndReason': "You didn't choose to open or return.",
-        'didTheyWin': False
     },
     'The orc beats you!': {
         'validCommands': {},
@@ -140,10 +128,10 @@ You open it and find a pile of gold!""",
     }
 }
 
-monsters = {
+tomeOfManyMonsters = {
     'orc': {
         'name': 'Orc',
-        'baseChance': 70,
+        'challenge': 30,
         'toughness': 10
     },
 }
@@ -155,13 +143,22 @@ def lowerInput(prompt):
 
 
 def processGameOver(book, reason, win, character):
-    print(f"\n{reason}\n")
+    print(f"\n{reason}")
+    print("Game Over")
     if win == True:
         print("You Win!")
     else:
         print("You Lose!")
-    print(f"Your character ended at level {character['level']} with gear: {character['gear']}")
-    print("Game Over")
+    print(f"\nYour character ended at level {character['level']}")
+    if character['gear']:
+        print(f"With gear: {character['gear']}.")
+    else:
+        print("You did not have any gear!")
+    if character['coins'] == 0:
+        print("You were broke!")
+    else:
+        coin_word = "coin" if character['coins'] == 1 else "coins"
+        print(f"You had {character['coins']} {coin_word}.")
 
 import random
 
@@ -172,57 +169,73 @@ def levelUp(character):
 
 def processFight(book, chapter, character):
     diceRolls = [random.randint(1, 100) for _ in range(character['level'])]
-    lowestRoll = min(diceRolls)
-    baseChance = monsters[book[chapter]['fight']]['baseChance']
-    toughness = monsters[book[chapter]['fight']]['toughness']
-    print(f"Your character is at level {character['level']}, so you get to roll {character['level']} dice.")
-    print(f"You need your lowest roll + the enemy's toughness ({toughness}) to be less than {baseChance} percent.")
-    print(f"You rolled {diceRolls} and your lowest roll is {lowestRoll}")
-    print(f"Your lowest roll + toughness is {lowestRoll + toughness}")
-    if lowestRoll + toughness <= baseChance:
+    highestRoll = max(diceRolls)
+    challenge = tomeOfManyMonsters[book[chapter]['fight']]['challenge']
+    toughness = tomeOfManyMonsters[book[chapter]['fight']]['toughness']
+    print(f"\nYour character is at level {character['level']}, so you get to roll {character['level']} dice.")
+    print(f"You need your highest roll - the enemy's toughness ({toughness}) to be greater than the enemy's challnge value of {challenge}.")
+    print(f"\nYou rolled {diceRolls} and your highest roll is {highestRoll}")
+    print(f"Your highest roll - toughness is {highestRoll - toughness}\n")
+    if highestRoll - toughness >= challenge:
+        print("You win the fight!")
         character['experience'] += 1
         if character['experience'] >= character['level'] * 3:
             levelUp(character)
         else:
             neededExperience = character['level'] * 3 - character['experience']
-            print(f"You need {neededExperience} more experience points to level up.")
+            point_word = "point" if neededExperience == 1 else "points"
+            print(f"You need {neededExperience} more experience {point_word} to level up.")
         return 'win'
     else:
         return 'lose'
 
+class QuitException(Exception):
+    pass
+
 def playBook(book, chapter, character):
-    while True:
+    try:
         while True:
+            print(f"\nChapter: {chapter}")
+            if 'chapterContent' in book[chapter]:
+                print(book[chapter]['chapterContent'])
+            
+            prompt_for_command = True
             if 'fight' in book[chapter]:
-                chapterContent = book[chapter].get('chapterContent')
-                if chapterContent:
-                    print(f"\n{chapterContent}\n")
                 result = processFight(book, chapter, character)
-                if result == 'win':
-                    chapter = book[chapter]['validCommands'].get('win')
-                elif result == 'lose':
-                    chapter = book[chapter]['validCommands'].get('lose')
-                continue
-            elif 'chapterContent' in book[chapter]:
-                command = lowerInput(book[chapter]['chapterContent'])
-                nextChapter = book[chapter]['validCommands'].get(command)
-                if nextChapter:
-                    chapter = nextChapter
+                if result in ['win', 'lose']:
+                    chapter = book[chapter]['validCommands'].get(result)
+                    # if result == 'lose':
+                    #     reason = book[chapter]['gameEndReason']
+                    #     win = book[chapter]['didTheyWin']
+                prompt_for_command = False
+
+            if prompt_for_command:
+                prompt = book[chapter].get('prompt', "What do you want to do?")
+                command = lowerInput(prompt)
+                if command == 'quit':
+                    if lowerInput("Are you sure you want to quit? (y/n)") == 'y':
+                        print("\nGoodbye!\n")
+                        raise QuitException
+                    else:
+                        continue
+                if command in book[chapter]['validCommands']:
+                    chapter = book[chapter]['validCommands'].get(command)
+                else:
+                    print("Invalid command. Please try again.")
                     continue
-            reason = "For some generic reason..."
-            win = False
+
             if 'gameEndReason' in book[chapter]:
                 reason = book[chapter]['gameEndReason']
-            if 'didTheyWin' in book[chapter]:
                 win = book[chapter]['didTheyWin']
-            processGameOver(book, reason, win, character)
-            break
-        if lowerInput("Do you want to play again? (y/n)") != 'y':
-            print("\nGoodbye!\n")
-            break
-        else:
-            chapter = 'At the crossroads'  # Reset to the starting chapter
-            character = createCharacter()  # Create a new character
+                processGameOver(book, reason, win, character)
+                if lowerInput("Do you want to play again? (y/n)") != 'y':
+                    print("\nGoodbye!\n")
+                    break
+                else:
+                    chapter = book['start']  # Reset to the starting chapter
+                    character = createCharacter()  # Create a new character
+    except QuitException:
+        pass
 
 def startGame(book):
     character = createCharacter()
@@ -233,7 +246,8 @@ def createCharacter():
     return {
         'level': 1,
         'experience': 0,
-        'gear': []
+        'gear': [],
+        'coins': 0
     }
     
 book = treasureIsland
