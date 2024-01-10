@@ -204,9 +204,6 @@ def playBook(book, chapter, character):
                 result = processFight(book, chapter, character)
                 if result in ['win', 'lose']:
                     chapter = book[chapter]['validCommands'].get(result)
-                    # if result == 'lose':
-                    #     reason = book[chapter]['gameEndReason']
-                    #     win = book[chapter]['didTheyWin']
                 prompt_for_command = False
 
             if prompt_for_command:
