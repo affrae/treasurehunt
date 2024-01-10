@@ -92,7 +92,7 @@ You can 'climb' the tree or 'return' to the edge of the forest""",
                 'return': 'At the forest'
             },
             'search':{
-                'old scroll': "You find an old scroll at the base of the tree.",
+                'dragonslayer sword': "You find a dragonslayer sword at the base of the tree.",
                 'found': False
             }
         },
@@ -128,7 +128,7 @@ You can 'climb' the mountain or 'return' to the crossroads""",
         },
         'In the cave': {
             'chapterContent': """You are in the cave.
-        You can 'fight' the dragon or 'return' to the base of the mountain""",
+You can 'fight' the dragon that happens to be here, or 'return' to the base of the mountain""",
             'validCommands': {
                 'fight': 'Fight with the dragon',
                 'return': 'At the mountain'
@@ -137,14 +137,14 @@ You can 'climb' the mountain or 'return' to the crossroads""",
         'Fight with the dragon': {
             'chapterContent': """You decide to fight the dragon.
 Have at it!!!""",
-            'fight': 'orc',
+            'fight': 'dragon',
             'validCommands': {
                 'win': 'You beat the dragon!',
                 'lose': 'The dragon beats you!'
             },
         },
-        'You beat the orc!': {
-            'chapterContent': """You beat the orc and they run away.
+        'You beat the dragon!': {
+            'chapterContent': """You beat the dragon and they die a messy death.
 You can 'climb' the mountain or 'return' to the crossroads""",
             'validCommands': {
                 'climb': 'On the mountain',
@@ -400,7 +400,7 @@ You open it and find a pile of gold coins.""",
         },
         'dragon': {
             'name': 'Dragon',
-            'challenge': 100,
+            'challenge': 80,
             'toughness': 50
         },
         'zombie': {
@@ -422,6 +422,10 @@ You open it and find a pile of gold coins.""",
         'shiny sword': {
             'name': 'Shiny Sword',
             'damage': 20
+        },
+        'dragonslayer sword': {
+            'name': ' Dragonslayer Sword',
+            'damage': 90
         }
     }
 }
@@ -464,7 +468,7 @@ def processGameOver(book, chapter, character):
     else:
         print("You Lose!")
     print(f"\nYour character achieved level {character['level']}")
-    handle_inventory(None, None, character)
+    handle_inventory(book, None, character)
 
 
 import random
@@ -541,7 +545,10 @@ def handle_inventory(book, chapter, character):
     if character['inventory']:
         print("\nYou have the following items:")
         for item in character['inventory']:
-            print(f"- {item}")
+            if item in book['codexOfManyItems'] and 'damage' in book['codexOfManyItems'][item]:
+                print(f"- {item} (Damage: {book['codexOfManyItems'][item]['damage']})")
+            else:
+                print(f"- {item}")
     else:
         print("\nYou have no items.")
     if character['coins'] > 0:
@@ -601,10 +608,29 @@ def playBook(book, chapter, character):
                 if result in ['win', 'lose']:
                     chapter = book['chapters'][chapter]['validCommands'].get(result)
                     if result == 'win':
-                        # print(f"\nChapter: {chapter}: {book['chapters'][chapter]}")
                         print(f"\nChapter: {chapter}")
                         if 'chapterContent' in book['chapters'][chapter]:
                             print(book['chapters'][chapter]['chapterContent'])
+                        if 'autoFind' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['autoFind'] and not book['chapters'][chapter]['autoFind']['found']:
+                            book['chapters'][chapter]['autoFind']['found'] = True
+                            for item in book['chapters'][chapter]['autoFind']:
+                                if item == 'coinsText' or item == 'found':
+                                    continue
+                                if item == 'coins':
+                                    coin_count = book['chapters'][chapter]['autoFind']['coins']
+                                    coin_word = "coin" if coin_count == 1 else "coins"
+                                    if 'coinsText' in book['chapters'][chapter]['autoFind']:
+                                        print(f"\n{book['chapters'][chapter]['autoFind']['coinsText']}")
+                                    print(f"\nYou find {coin_count} {coin_word}")
+                                    character['coins'] += book['chapters'][chapter]['autoFind'][item]
+                                elif item not in character['inventory']:
+                                    print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
+                                    print(f"You add this {item} to your inventory.")
+                                    print(f"I wonder if it might have been useful earlier?")
+                                    character['inventory'].append(item)
+                                else:
+                                    print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
+                                    print("But you can only carry one of those and you already have this item.")
                     elif result == 'lose':
                         prompt_for_command = False
 
