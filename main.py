@@ -23,6 +23,11 @@ ____/______/______/______/______/_____"=.o|o_.--""___/______/______/______/____
 
 print("Welcome to Treasure Island.")
 print("Your mission is to find the treasure.")
+print('''\nREMEBMER: You can type:
+- 'search' to search the area you are in for items.
+- 'inventory' to see what items you have.
+- 'quit' to quit the game.
+''')
 
 #https://www.draw.io/?lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=Treasure%20Island%20Conditional.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1oDe4ehjWZipYRsVfeAx2HyB7LCQ8_Fvi%26export%3Ddownload
 
@@ -44,7 +49,10 @@ There is an island in the middle of the lake.
 You can 'swim' across or 'wait' for a boat.""",
         'validCommands': {
             'swim': 'Drowned',
-            'wait': 'At the island'
+            'wait': 'At the dock'
+        },
+        'search':{
+            'rusty sword': "In the mud by the lake you find a rusty sword."
         }
     },
     'At the chasm': {
@@ -67,8 +75,19 @@ You can 'leap' across or 'return' to the crossroad.""",
         'gameEndReason': "You Drown.",
         'didTheyWin': False
     },
-    'At the island': {
-        'chapterContent': """You arrive at the island unharmed.
+    'At the dock': {
+        'chapterContent': """You pull up at the dock and arrive at the island unharmed.
+There is a house with 3 doors.
+One 'red', one 'yellow' and one 'blue'.""",
+        'prompt': "Which colour door do you choose to open?",
+        'validCommands': {
+            'red': 'At the red door',
+            'yellow': 'At the yellow door',
+            'blue': 'At the blue door'
+        },
+    },
+    'Return to the dock': {
+        'chapterContent': """You return back to the dock.
 There is a house with 3 doors.
 One 'red', one 'yellow' and one 'blue'.""",
         'prompt': "Which colour door do you choose to open?",
@@ -89,7 +108,7 @@ All over a sudden an Orc rushes out from a nearby bush and tries to attack you!
 You can 'fight' or 'retreat'.""",        
         'validCommands': {
             'fight': 'Fight the orc',
-            'retreat': 'At the island'
+            'retreat': 'Return to the dock'
         },
     },
     'At the blue door': {
@@ -108,10 +127,10 @@ Have at it!!!""",
     },
     'You beat the orc!': {
         'chapterContent': """You beat the orc and they run away.
-You can 'open' the yellow door or 'return' to the island.""",
+You can 'open' the yellow door or 'return' to the dock.""",
         'validCommands': {
             'open': 'Open the yellow door',
-            'return': 'At the island'
+            'return': 'Return to the dock'
         },
     },
     'The orc beats you!': {
@@ -121,9 +140,12 @@ You can 'open' the yellow door or 'return' to the island.""",
     },
     'Open the yellow door': {
         'validCommands': {},
-        'gameEndReason': """You open the yellow door.
-Inside you find a treasure chest.
-You open it and find a pile of gold!""",
+        'autoFind': {
+            'coinsText': """Inside you find a treasure chest.
+You open it and find a pile of gold coins.""",
+            'coins': 100
+        },
+        'gameEndReason': """You open the yellow door.""",
         'didTheyWin': True
     }
 }
@@ -136,29 +158,48 @@ tomeOfManyMonsters = {
     },
 }
 
+codexOfManyItems = {
+    'rusty sword': {
+        'name': 'Rusty Sword',
+        'damage': 10
+    }
+}
+
 
 
 def lowerInput(prompt):
     return input(f"\n{prompt}\n> ").lower()
 
 
-def processGameOver(book, reason, win, character):
+def processGameOver(book, chapter, character):
+    reason = book[chapter]['gameEndReason']
+    win = book[chapter]['didTheyWin']
     print(f"\n{reason}")
-    print("Game Over")
+    if 'autoFind' in book[chapter]:
+        for item in book[chapter]['autoFind']:
+            if item == 'coinsText':
+                continue
+            if item == 'coins':
+                coin_count = book[chapter]['autoFind']['coins']
+                coin_word = "coin" if coin_count == 1 else "coins"
+                if 'coinsText' in book[chapter]['autoFind']:
+                    print(f"\n{book[chapter]['autoFind']['coinsText']}")
+                print(f"\nYou find {coin_count} {coin_word}")
+                character['coins'] += book[chapter]['autoFind'][item]
+            elif item not in character['inventory']:
+                print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                character['inventory'].append(item)
+            else:
+                print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                print("But you can only carry one of those and you already have this item.")
+    print("\nGame Over")
     if win == True:
         print("You Win!")
     else:
         print("You Lose!")
-    print(f"\nYour character ended at level {character['level']}")
-    if character['gear']:
-        print(f"With gear: {character['gear']}.")
-    else:
-        print("You did not have any gear!")
-    if character['coins'] == 0:
-        print("You were broke!")
-    else:
-        coin_word = "coin" if character['coins'] == 1 else "coins"
-        print(f"You had {character['coins']} {coin_word}.")
+    print(f"\nYour character achieved level {character['level']}")
+    handle_inventory(None, None, character)
+
 
 import random
 
@@ -174,9 +215,23 @@ def processFight(book, chapter, character):
     toughness = tomeOfManyMonsters[book[chapter]['fight']]['toughness']
     print(f"\nYour character is at level {character['level']}, so you get to roll {character['level']} dice.")
     print(f"You need your highest roll - the enemy's toughness ({toughness}) to be greater than the enemy's challnge value of {challenge}.")
+
+    # Search the character's gear for items with a 'damage' key
+    highestDamage = 0
+    highestDamageItem = None
+    for item_name in character['inventory']:
+        if item_name in codexOfManyItems:
+            if 'damage' in codexOfManyItems[item_name]:
+                if codexOfManyItems[item_name]['damage'] > highestDamage:
+                    highestDamage = codexOfManyItems[item_name]['damage']
+                    highestDamageItem = item_name
+
+    if highestDamage > 0:
+        print(f"Your {highestDamageItem} adds {highestDamage} to your roll.")
+
     print(f"\nYou rolled {diceRolls} and your highest roll is {highestRoll}")
-    print(f"Your highest roll - toughness is {highestRoll - toughness}\n")
-    if highestRoll - toughness >= challenge:
+    print(f"Your highest roll + damage - toughness is {highestRoll + highestDamage - toughness}\n")
+    if highestRoll + highestDamage - toughness >= challenge:
         print("You win the fight!")
         character['experience'] += 1
         if character['experience'] >= character['level'] * 3:
@@ -192,39 +247,96 @@ def processFight(book, chapter, character):
 class QuitException(Exception):
     pass
 
+def handle_search(book, chapter, character):
+    if 'search' in book[chapter]:
+        for item in book[chapter]['search']:
+            print(f"\n{book[chapter]['search'][item]}")
+            if item not in character['inventory']:
+                character['inventory'].append(item)
+            else:
+                print("But you can only carry one of those and you already have this item.")
+    else:
+        print("\nYou find nothing.")
+
+def handle_inventory(book, chapter, character):
+    if character['inventory']:
+        print("\nYou have the following items:")
+        for item in character['inventory']:
+            print(f"- {item}")
+    else:
+        print("\nYou have no items.")
+    if character['coins'] > 0:
+        coin_word = "coin" if character['coins'] == 1 else "coins"
+        print(f"\nYou have {character['coins']} {coin_word}.")
+    else:
+        print("\nYou are broke!")
+    
+def handle_quit(book, chapter, character):
+    if lowerInput("\nAre you sure you want to quit? (y/n)") == 'y':
+        print("\nGoodbye!\n")
+        raise QuitException
+
+def handle_invalid_command(book, chapter, character):
+    print("\nInvalid command. Please try again.")
+
+command_handlers = {
+    'search': handle_search,
+    'inventory': handle_inventory,
+    'quit': handle_quit,
+    'invalid': handle_invalid_command,
+}
+
 def playBook(book, chapter, character):
     try:
         while True:
+            # print(f"\nChapter: {chapter}: {book[chapter]}")
             print(f"\nChapter: {chapter}")
             if 'chapterContent' in book[chapter]:
                 print(book[chapter]['chapterContent'])
+            if 'autoFind' in book[chapter]:
+                for item in book[chapter]['autoFind']:
+                    if item == 'coinsText':
+                        continue
+                    if item == 'coins':
+                        coin_count = book[chapter]['autoFind']['coins']
+                        coin_word = "coin" if coin_count == 1 else "coins"
+                        if 'coinsText' in book[chapter]['autoFind']:
+                            print(f"\n{book[chapter]['autoFind']['coinsText']}")
+                        print(f"\nYou find {coin_count} {coin_word}")
+                        character['coins'] += book[chapter]['autoFind'][item]
+                    elif item not in character['inventory']:
+                        print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                        character['inventory'].append(item)
+                    else:
+                        print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                        print("But you can only carry one of those and you already have this item.")
             
             prompt_for_command = True
             if 'fight' in book[chapter]:
                 result = processFight(book, chapter, character)
                 if result in ['win', 'lose']:
                     chapter = book[chapter]['validCommands'].get(result)
-                prompt_for_command = False
+                    if result == 'win':
+                        # print(f"\nChapter: {chapter}: {book[chapter]}")
+                        print(f"\nChapter: {chapter}")
+                        if 'chapterContent' in book[chapter]:
+                            print(book[chapter]['chapterContent'])
+                    elif result == 'lose':
+                        prompt_for_command = False
 
             if prompt_for_command:
                 prompt = book[chapter].get('prompt', "What do you want to do?")
                 command = lowerInput(prompt)
-                if command == 'quit':
-                    if lowerInput("Are you sure you want to quit? (y/n)") == 'y':
-                        print("\nGoodbye!\n")
-                        raise QuitException
-                    else:
-                        continue
                 if command in book[chapter]['validCommands']:
                     chapter = book[chapter]['validCommands'].get(command)
                 else:
-                    print("Invalid command. Please try again.")
-                    continue
+                    handler = command_handlers.get(command, command_handlers['invalid'])
+                    handler(book, chapter, character)
 
             if 'gameEndReason' in book[chapter]:
-                reason = book[chapter]['gameEndReason']
-                win = book[chapter]['didTheyWin']
-                processGameOver(book, reason, win, character)
+                print(f"\nChapter: {chapter}: {book[chapter]}")
+                print(f"\nChapter: {chapter}")
+                processGameOver(book, chapter, character)
                 if lowerInput("Do you want to play again? (y/n)") != 'y':
                     print("\nGoodbye!\n")
                     break
@@ -243,7 +355,7 @@ def createCharacter():
     return {
         'level': 1,
         'experience': 0,
-        'gear': [],
+        'inventory': [],
         'coins': 0
     }
     
