@@ -35,133 +35,178 @@ print('''\nREMEBMER: You can type:
 
 treasureIsland = {
     'start': 'At the crossroads',
-    'At the crossroads': {
-        'chapterContent': """You are at a crossroad.
+    'chapters': {
+        'At the crossroads': {
+            'chapterContent': """You are at a crossroad.
 You can go 'left' or 'right'""",
-        'validCommands': {
-            'left': 'At the lake',
-            'right': 'At the chasm'
-        }
-    },
-    'At the lake': {
-        'chapterContent': """You come to a lake.
-There is an island in the middle of the lake.
-You can 'swim' across or 'wait' for a boat.""",
-        'validCommands': {
-            'swim': 'Drowned',
-            'wait': 'At the dock'
+            'validCommands': {
+                'left': 'At the lake',
+                'right': 'At the chasm'
+            }
         },
-        'search':{
-            'rusty sword': "In the mud by the lake you find a rusty sword."
-        }
-    },
-    'At the chasm': {
-        'chapterContent': """You see a huge chasm in the ground, stretching to your left and right for as far as you can see.
+        'At the lake': {
+            'chapterContent': """You come to a lake.
+There is an island in the middle of the lake.
+You can 'swim' across or 'wait' for a boat.
+You can also 'return' to the crossrowds""",
+            'validCommands': {
+                'swim': 'Drowned',
+                'wait': 'At the dock',
+                'return': 'At the crossroads'
+            },
+            'search':{
+                'rusty sword': "In the mud by the lake you find a rusty sword.",
+                'found': False
+            }
+        },
+        'At the chasm': {
+            'chapterContent': """You see a huge chasm in the ground, stretching to your left and right for as far as you can see.
 The path seems to continue on the other side.
 Maybe the bridge fell in?
 You can 'leap' across or 'return' to the crossroad.""",
-        'validCommands': {
-            'leap': 'Fell into chasm',
-            'return': 'At the crossroads'
-        }
-    },
-    'Fell into chasm': {
-        'validCommands': {},
-        'gameEndReason': "You fall down into what you now know to be a bottomless chasm.",
-        'didTheyWin': False
-    },
-    'Drowned': {
-        'validCommands': {},
-        'gameEndReason': "You Drown.",
-        'didTheyWin': False
-    },
-    'At the dock': {
-        'chapterContent': """You pull up at the dock and arrive at the island unharmed.
-There is a house with 3 doors.
-One 'red', one 'yellow' and one 'blue'.""",
-        'prompt': "Which colour door do you choose to open?",
-        'validCommands': {
-            'red': 'At the red door',
-            'yellow': 'At the yellow door',
-            'blue': 'At the blue door'
+            'validCommands': {
+                'leap': 'Fell into chasm',
+                'return': 'At the crossroads'
+            },
+            'search': {
+                'coinsText': """Under some long-ago dried up manure...""",
+                'coins': 10,
+                'found': False
+            }
         },
-    },
-    'Return to the dock': {
-        'chapterContent': """You return back to the dock.
-There is a house with 3 doors.
-One 'red', one 'yellow' and one 'blue'.""",
-        'prompt': "Which colour door do you choose to open?",
-        'validCommands': {
-            'red': 'At the red door',
-            'yellow': 'At the yellow door',
-            'blue': 'At the blue door'
+        'Fell into chasm': {
+            'validCommands': {},
+            'gameEndReason': "You fall down into what you now know to be a bottomless chasm.",
+            'didTheyWin': False
         },
-    },
-    'At the red door': {
-        'validCommands': {},
-        'gameEndReason': "You open the red door.\nYou burn to death.",
-        'didTheyWin': False
-    },
-    'At the yellow door': {
-        'chapterContent': """You walk up to the yellow door.
+        'Drowned': {
+            'validCommands': {},
+            'gameEndReason': "You Drown.",
+            'didTheyWin': False
+        },
+        'At the dock': {
+            'chapterContent': """You pull up at the dock and arrive at the island unharmed.
+There is a house with 5 doors.
+One 'red', one 'yellow', one 'green', one 'purple' and one 'blue'.""",
+            'prompt': "Which colour door do you choose to open?",
+            'validCommands': {
+                'red': 'At the red door',
+                'yellow': 'At the yellow door',
+                'blue': 'At the blue door',
+                'purple': 'At the purple door',
+                'green': 'At the green door'
+            },
+        },
+        'Return to the dock': {
+            'chapterContent': """You return back to the dock.
+There is a house with 5 doors.
+One 'red', one 'yellow', one 'green', one 'purple' and one 'blue'.""",
+            'prompt': "Which colour door do you choose to open?",
+            'validCommands': {
+                'red': 'At the red door',
+                'yellow': 'At the yellow door',
+                'blue': 'At the blue door',
+                'purple': 'At the purple door',
+                'green': 'At the green door'
+            },
+        },
+        'At the red door': {
+            'validCommands': {},
+            'gameEndReason': "You open the red door.\nYou burn to death.",
+            'didTheyWin': False
+        },
+        'At the yellow door': {
+            'chapterContent': """You walk up to the yellow door.
 All over a sudden an Orc rushes out from a nearby bush and tries to attack you!
 You can 'fight' or 'retreat'.""",        
-        'validCommands': {
-            'fight': 'Fight the orc',
-            'retreat': 'Return to the dock'
+            'validCommands': {
+                'fight': 'Fight the orc',
+                'retreat': 'Return to the dock'
+            },
         },
-    },
-    'At the blue door': {
-        'validCommands': {},
-        'gameEndReason': "You open the blue door.\nYou freeze to death.",
-        'didTheyWin': False
-    },
-    'Fight the orc': {
-        'chapterContent': """You decide to fight the orc.
-Have at it!!!""",
-        'fight': 'orc',
-        'validCommands': {
-            'win': 'You beat the orc!',
-            'lose': 'The orc beats you!'
-        },
-    },
-    'You beat the orc!': {
-        'chapterContent': """You beat the orc and they run away.
-You can 'open' the yellow door or 'return' to the dock.""",
-        'validCommands': {
-            'open': 'Open the yellow door',
-            'return': 'Return to the dock'
-        },
-    },
-    'The orc beats you!': {
-        'validCommands': {},
-        'gameEndReason': "You lose the fight and die.",
-        'didTheyWin': False
-    },
-    'Open the yellow door': {
-        'validCommands': {},
-        'autoFind': {
-            'coinsText': """Inside you find a treasure chest.
+        'At the green door': {
+            'validCommands': {},
+            'autoFind': {
+                'coinsText': """Inside you find a treasure chest.
 You open it and find a pile of gold coins.""",
-            'coins': 100
+                'coins': 10,
+                'found': False
+            },
+            'gameEndReason': """You open the green door.""",
+            'didTheyWin': True
         },
-        'gameEndReason': """You open the yellow door.""",
-        'didTheyWin': True
-    }
-}
-
-tomeOfManyMonsters = {
-    'orc': {
-        'name': 'Orc',
-        'challenge': 30,
-        'toughness': 10
+        'At the purple door': {
+            'chapterContent': """You walk up to the purple door,
+remembering that when you are done with this door your options are
+to pick another colour door ('red', 'blue', 'yellow' or 'green') or 'return' to the dock.""",
+            'validCommands': {
+                'return': 'Return to the dock',
+                'blue': 'At the blue door',
+                'yellow': 'At the yellow door',
+                'red': 'At the red door',
+                'green': 'At the green door'
+                },
+            'autoFind': {
+                'shiny sword': "Inside you find a treasure chest.\nYou open it and find a shiny sword.",
+                'found': False
+            },
+        },
+        'At the blue door': {
+            'validCommands': {},
+            'gameEndReason': "You open the blue door.\nYou freeze to death.",
+            'didTheyWin': False
+        },
+        'Fight the orc': {
+            'chapterContent': """You decide to fight the orc.
+Have at it!!!""",
+            'fight': 'orc',
+            'validCommands': {
+                'win': 'You beat the orc!',
+                'lose': 'The orc beats you!'
+            },
+        },
+        'You beat the orc!': {
+            'chapterContent': """You beat the orc and they run away.
+You can 'open' the yellow door or 'return' to the dock.""",
+            'validCommands': {
+                'open': 'Open the yellow door',
+                'return': 'Return to the dock'
+            },
+        },
+        'The orc beats you!': {
+            'validCommands': {},
+            'gameEndReason': "You lose the fight and die.",
+            'didTheyWin': False
+        },
+        'Open the yellow door': {
+            'validCommands': {},
+            'autoFind': {
+                'coinsText': """Inside you find a treasure chest.
+You open it and find a pile of gold coins.""",
+                'coins': 1000,
+                'rusty sword': 'You find a rusty sword.',
+                'found': False
+            },
+            'gameEndReason': """You open the yellow door.""",
+            'didTheyWin': True
+        }
     },
-}
-
-codexOfManyItems = {
-    'rusty sword': {
-        'name': 'Rusty Sword',
-        'damage': 10
+    'tomeOfManyMonsters': {
+        'orc': {
+            'name': 'Orc',
+            'challenge': 30,
+            'toughness': 10
+        },
+    },
+    'codexOfManyItems' : {
+        'rusty sword': {
+            'name': 'Rusty Sword',
+            'damage': 10
+        },
+        'shiny sword': {
+            'name': 'Shiny Sword',
+            'damage': 20
+        }
     }
 }
 
@@ -172,26 +217,31 @@ def lowerInput(prompt):
 
 
 def processGameOver(book, chapter, character):
-    reason = book[chapter]['gameEndReason']
-    win = book[chapter]['didTheyWin']
+    reason = book['chapters'][chapter]['gameEndReason']
+    win = book['chapters'][chapter]['didTheyWin']
     print(f"\n{reason}")
-    if 'autoFind' in book[chapter]:
-        for item in book[chapter]['autoFind']:
-            if item == 'coinsText':
+    if 'autoFind' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['autoFind'] and not book['chapters'][chapter]['autoFind']['found']:
+        book['chapters'][chapter]['autoFind']['found'] = True
+        for item in book['chapters'][chapter]['autoFind']:
+            if item == 'coinsText' or item == 'found':
                 continue
             if item == 'coins':
-                coin_count = book[chapter]['autoFind']['coins']
+                coin_count = book['chapters'][chapter]['autoFind']['coins']
                 coin_word = "coin" if coin_count == 1 else "coins"
-                if 'coinsText' in book[chapter]['autoFind']:
-                    print(f"\n{book[chapter]['autoFind']['coinsText']}")
+                if 'coinsText' in book['chapters'][chapter]['autoFind']:
+                    print(f"\n{book['chapters'][chapter]['autoFind']['coinsText']}")
                 print(f"\nYou find {coin_count} {coin_word}")
-                character['coins'] += book[chapter]['autoFind'][item]
+                character['coins'] += book['chapters'][chapter]['autoFind'][item]
             elif item not in character['inventory']:
-                print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
+                print(f"You add this {item} to your inventory.")
+                print(f"I wonder if it might have been useful earlier?")
                 character['inventory'].append(item)
             else:
-                print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
                 print("But you can only carry one of those and you already have this item.")
+    elif 'autoFind' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['autoFind']:
+        print("\nYou find nothing more.") 
     print("\nGame Over")
     if win == True:
         print("You Win!")
@@ -211,26 +261,26 @@ def levelUp(character):
 def processFight(book, chapter, character):
     diceRolls = [random.randint(1, 100) for _ in range(character['level'])]
     highestRoll = max(diceRolls)
-    challenge = tomeOfManyMonsters[book[chapter]['fight']]['challenge']
-    toughness = tomeOfManyMonsters[book[chapter]['fight']]['toughness']
+    challenge = book['tomeOfManyMonsters'][book['chapters'][chapter]['fight']]['challenge']
+    toughness = book['tomeOfManyMonsters'][book['chapters'][chapter]['fight']]['toughness']
     print(f"\nYour character is at level {character['level']}, so you get to roll {character['level']} dice.")
-    print(f"You need your highest roll - the enemy's toughness ({toughness}) to be greater than the enemy's challnge value of {challenge}.")
+    print(f"You need your (highest roll + the highest damage any of your weapons can provide) - the enemy's toughness ({toughness}) to be greater than the enemy's challenge value of {challenge}.")
 
     # Search the character's gear for items with a 'damage' key
     highestDamage = 0
     highestDamageItem = None
     for item_name in character['inventory']:
-        if item_name in codexOfManyItems:
-            if 'damage' in codexOfManyItems[item_name]:
-                if codexOfManyItems[item_name]['damage'] > highestDamage:
-                    highestDamage = codexOfManyItems[item_name]['damage']
+        if item_name in book['codexOfManyItems']:
+            if 'damage' in book['codexOfManyItems'][item_name]:
+                if book['codexOfManyItems'][item_name]['damage'] > highestDamage:
+                    highestDamage = book['codexOfManyItems'][item_name]['damage']
                     highestDamageItem = item_name
 
     if highestDamage > 0:
-        print(f"Your {highestDamageItem} adds {highestDamage} to your roll.")
+        print(f"Your {highestDamageItem} is your best weapon and adds {highestDamage} to your roll.")
 
     print(f"\nYou rolled {diceRolls} and your highest roll is {highestRoll}")
-    print(f"Your highest roll + damage - toughness is {highestRoll + highestDamage - toughness}\n")
+    print(f"Your (highest roll ({highestRoll}) + damage ({highestDamage})) - toughness ({toughness}) is {highestRoll + highestDamage - toughness}\n")
     if highestRoll + highestDamage - toughness >= challenge:
         print("You win the fight!")
         character['experience'] += 1
@@ -248,12 +298,25 @@ class QuitException(Exception):
     pass
 
 def handle_search(book, chapter, character):
-    if 'search' in book[chapter]:
-        for item in book[chapter]['search']:
-            print(f"\n{book[chapter]['search'][item]}")
-            if item not in character['inventory']:
+    if 'search' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['search'] and not book['chapters'][chapter]['search']['found']:
+        book['chapters'][chapter]['search']['found'] = True
+        for item in book['chapters'][chapter]['search']:
+            if item == 'coinsText' or item == 'found':
+                continue
+            if item == 'coins':
+                coin_count = book['chapters'][chapter]['search']['coins']
+                coin_word = "coin" if coin_count == 1 else "coins"
+                if 'coinsText' in book['chapters'][chapter]['search']:
+                    print(f"\n{book['chapters'][chapter]['search']['coinsText']}")
+                print(f"\nYou find {coin_count} {coin_word}")
+                character['coins'] += book['chapters'][chapter]['search'][item]
+            elif item not in character['inventory']:
+                print(f"\n{book['chapters'][chapter]['search'][item]}")
+                print(f"You add this {item} to your inventory.")
+                print(f"I wonder if it might have been useful earlier?")
                 character['inventory'].append(item)
             else:
+                print(f"\n{book['chapters'][chapter]['search'][item]}")
                 print("But you can only carry one of those and you already have this item.")
     else:
         print("\nYou find nothing.")
@@ -289,52 +352,57 @@ command_handlers = {
 def playBook(book, chapter, character):
     try:
         while True:
-            # print(f"\nChapter: {chapter}: {book[chapter]}")
+            # print(f"\nChapter: {chapter}: {book['chapters'][chapter]}")
             print(f"\nChapter: {chapter}")
-            if 'chapterContent' in book[chapter]:
-                print(book[chapter]['chapterContent'])
-            if 'autoFind' in book[chapter]:
-                for item in book[chapter]['autoFind']:
-                    if item == 'coinsText':
+            if 'chapterContent' in book['chapters'][chapter]:
+                print(book['chapters'][chapter]['chapterContent'])
+            if 'autoFind' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['autoFind'] and not book['chapters'][chapter]['autoFind']['found']:
+                book['chapters'][chapter]['autoFind']['found'] = True
+                for item in book['chapters'][chapter]['autoFind']:
+                    if item == 'coinsText' or item == 'found':
                         continue
                     if item == 'coins':
-                        coin_count = book[chapter]['autoFind']['coins']
+                        coin_count = book['chapters'][chapter]['autoFind']['coins']
                         coin_word = "coin" if coin_count == 1 else "coins"
-                        if 'coinsText' in book[chapter]['autoFind']:
-                            print(f"\n{book[chapter]['autoFind']['coinsText']}")
+                        if 'coinsText' in book['chapters'][chapter]['autoFind']:
+                            print(f"\n{book['chapters'][chapter]['autoFind']['coinsText']}")
                         print(f"\nYou find {coin_count} {coin_word}")
-                        character['coins'] += book[chapter]['autoFind'][item]
+                        character['coins'] += book['chapters'][chapter]['autoFind'][item]
                     elif item not in character['inventory']:
-                        print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                        print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
+                        print(f"You add this {item} to your inventory.")
+                        print(f"I wonder if it might have been useful earlier?")
                         character['inventory'].append(item)
                     else:
-                        print(f"\nYou find {book[chapter]['autoFind'][item]}")
+                        print(f"\n{book['chapters'][chapter]['autoFind'][item]}")
                         print("But you can only carry one of those and you already have this item.")
-            
+            elif 'autoFind' in book['chapters'][chapter] and 'found' in book['chapters'][chapter]['autoFind']:
+                print("\nYou find nothing more.")          
+
             prompt_for_command = True
-            if 'fight' in book[chapter]:
+            if 'fight' in book['chapters'][chapter]:
                 result = processFight(book, chapter, character)
                 if result in ['win', 'lose']:
-                    chapter = book[chapter]['validCommands'].get(result)
+                    chapter = book['chapters'][chapter]['validCommands'].get(result)
                     if result == 'win':
-                        # print(f"\nChapter: {chapter}: {book[chapter]}")
+                        # print(f"\nChapter: {chapter}: {book['chapters'][chapter]}")
                         print(f"\nChapter: {chapter}")
-                        if 'chapterContent' in book[chapter]:
-                            print(book[chapter]['chapterContent'])
+                        if 'chapterContent' in book['chapters'][chapter]:
+                            print(book['chapters'][chapter]['chapterContent'])
                     elif result == 'lose':
                         prompt_for_command = False
 
             if prompt_for_command:
-                prompt = book[chapter].get('prompt', "What do you want to do?")
+                prompt = book['chapters'][chapter].get('prompt', "What do you want to do?")
                 command = lowerInput(prompt)
-                if command in book[chapter]['validCommands']:
-                    chapter = book[chapter]['validCommands'].get(command)
+                if command in book['chapters'][chapter]['validCommands']:
+                    chapter = book['chapters'][chapter]['validCommands'].get(command)
                 else:
                     handler = command_handlers.get(command, command_handlers['invalid'])
                     handler(book, chapter, character)
 
-            if 'gameEndReason' in book[chapter]:
-                print(f"\nChapter: {chapter}: {book[chapter]}")
+            if 'gameEndReason' in book['chapters'][chapter]:
+                # print(f"\nChapter: {chapter}: {book['chapters'][chapter]}")
                 print(f"\nChapter: {chapter}")
                 processGameOver(book, chapter, character)
                 if lowerInput("Do you want to play again? (y/n)") != 'y':
@@ -359,6 +427,7 @@ def createCharacter():
         'coins': 0
     }
     
-book = treasureIsland
+import copy
 
+book = copy.deepcopy(treasureIsland)
 startGame(book)
