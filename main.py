@@ -118,13 +118,50 @@ You can 'jump' down or 'climb' down""",
 You can 'climb' the mountain or 'return' to the crossroads""",
             'validCommands': {
                 'climb': 'On the mountain',
-                'return': 'At the crossroads'
+                'return': 'At the crossroads',
+                'cave': 'In the cave'
             },
             'search':{
-                'cave entrance': "You find a hidden cave entrance.",
+                'cave entrance': "You find a hidden cave entrance. You can enter that 'cave' as well",
                 'found': False
             }
         },
+        'In the cave': {
+            'chapterContent': """You are in the cave.
+        You can 'fight' the dragon or 'return' to the base of the mountain""",
+            'validCommands': {
+                'fight': 'Fight with the dragon',
+                'return': 'At the mountain'
+            },
+        },
+        'Fight with the dragon': {
+            'chapterContent': """You decide to fight the dragon.
+Have at it!!!""",
+            'fight': 'orc',
+            'validCommands': {
+                'win': 'You beat the dragon!',
+                'lose': 'The dragon beats you!'
+            },
+        },
+        'You beat the orc!': {
+            'chapterContent': """You beat the orc and they run away.
+You can 'climb' the mountain or 'return' to the crossroads""",
+            'validCommands': {
+                'climb': 'On the mountain',
+                'return': 'At the crossroads',
+            },
+            'autoFind': {
+                'coinsText': """You find a few coins near the dragon's body.""",
+                'coins': 1_000_000,
+                'found': False
+            }
+        },
+        'The dragon beats you!': {
+            'validCommands': {},
+            'gameEndReason': "The dragon beats you!\nYou die.",
+            'didTheyWin': False
+        },
+
         'On the mountain': {
             'chapterContent': """You are on the mountain.
 You can 'continue' climbing or 'return' to the base of the mountain""",
@@ -321,6 +358,11 @@ You can 'open' the yellow door or 'return' to the dock.""",
                 'open': 'Open the yellow door',
                 'return': 'Return to the dock'
             },
+            'autoFind': {
+                'coinsText': """You find a some coins the orc dropped.""",
+                'coins': 10,
+                'found': False
+            }
         },
         'The orc beats you!': {
             'validCommands': {},
@@ -346,6 +388,31 @@ You open it and find a pile of gold coins.""",
             'challenge': 30,
             'toughness': 10
         },
+        'goblin': {
+            'name': 'Goblin',
+            'challenge': 20,
+            'toughness': 8
+        },
+        'troll': {
+            'name': 'Troll',
+            'challenge': 40,
+            'toughness': 15
+        },
+        'dragon': {
+            'name': 'Dragon',
+            'challenge': 100,
+            'toughness': 50
+        },
+        'zombie': {
+            'name': 'Zombie',
+            'challenge': 15,
+            'toughness': 5
+        },
+        'vampire': {
+            'name': 'Vampire',
+            'challenge': 80,
+            'toughness': 30
+        }
     },
     'codexOfManyItems' : {
         'rusty sword': {
