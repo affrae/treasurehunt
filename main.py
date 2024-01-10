@@ -86,28 +86,30 @@ You can 'leap' across or 'return' to the crossroad.""",
         },
         'At the dock': {
             'chapterContent': """You pull up at the dock and arrive at the island unharmed.
-There is a house with 5 doors.
-One 'red', one 'yellow', one 'green', one 'purple' and one 'blue'.""",
+There is a house with 6 doors.
+One 'red', one 'yellow', one 'green', one 'purple', one 'orange' and one 'blue'.""",
             'prompt': "Which colour door do you choose to open?",
             'validCommands': {
                 'red': 'At the red door',
                 'yellow': 'At the yellow door',
                 'blue': 'At the blue door',
                 'purple': 'At the purple door',
-                'green': 'At the green door'
+                'green': 'At the green door',
+                'orange': 'At the orange door'
             },
         },
         'Return to the dock': {
             'chapterContent': """You return back to the dock.
-There is a house with 5 doors.
-One 'red', one 'yellow', one 'green', one 'purple' and one 'blue'.""",
+There is a house with 6 doors.
+One 'red', one 'yellow', one 'green', one 'purple', one 'orange' and one 'blue'.""",
             'prompt': "Which colour door do you choose to open?",
             'validCommands': {
                 'red': 'At the red door',
                 'yellow': 'At the yellow door',
                 'blue': 'At the blue door',
                 'purple': 'At the purple door',
-                'green': 'At the green door'
+                'green': 'At the green door',
+                'orange': 'At the orange door'
             },
         },
         'At the red door': {
@@ -138,16 +140,34 @@ You open it and find a pile of gold coins.""",
         'At the purple door': {
             'chapterContent': """You walk up to the purple door,
 remembering that when you are done with this door your options are
-to pick another colour door ('red', 'blue', 'yellow' or 'green') or 'return' to the dock.""",
+to pick another colour door ('red', 'blue', 'yellow', 'orange' or 'green') or 'return' to the dock.""",
             'validCommands': {
                 'return': 'Return to the dock',
                 'blue': 'At the blue door',
                 'yellow': 'At the yellow door',
                 'red': 'At the red door',
-                'green': 'At the green door'
+                'green': 'At the green door',
+                'orange': 'At the orange door'
                 },
             'autoFind': {
                 'shiny sword': "Inside you find a treasure chest.\nYou open it and find a shiny sword.",
+                'found': False
+            },
+        },
+        'At the orange door': {
+            'chapterContent': """You walk up to the orange door,
+remembering that when you are done with this door your options are
+to pick another colour door ('red', 'blue', 'yellow', 'purple' or 'green') or 'return' to the dock.""",
+            'validCommands': {
+                'return': 'Return to the dock',
+                'blue': 'At the blue door',
+                'yellow': 'At the yellow door',
+                'red': 'At the red door',
+                'green': 'At the green door',
+                'purple': 'At the purple door'
+                },
+            'autoFind': {
+                'Fresh Cup of Coffee': "Inside you find a treasure chest.\nYou open it and find a fresh cup of coffee - mmmmm!",
                 'found': False
             },
         },
