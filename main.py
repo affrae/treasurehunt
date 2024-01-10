@@ -109,10 +109,12 @@ You can 'fight' or 'retreat'.""",
     },
     'Fight the orc': {
         'chapterContent': """You decide to fight the orc.
-Have at it!!!""",        
-        'fight': 50,
-        'win':'You beat the orc!',
-        'lose':'The orc beats you!',
+Have at it!!!""",
+        'fight': 'orc',
+        'validCommands': {
+            'win': 'You beat the orc!',
+            'lose': 'The orc beats you!'
+        },
     },
     'You beat the orc!': {
         'chapterContent': """You beat the orc and they run away.
@@ -138,6 +140,14 @@ You open it and find a pile of gold!""",
     }
 }
 
+monsters = {
+    'orc': {
+        'name': 'Orc',
+        'baseChance': 70,
+        'toughness': 10
+    },
+}
+
 
 
 def lowerInput(prompt):
@@ -155,13 +165,30 @@ def processGameOver(book, reason, win, character):
 
 import random
 
+def levelUp(character):
+    character['level'] += 1
+    character['experience'] = 0
+    print(f"Congratulations! Your character has leveled up to level {character['level']}")
+
 def processFight(book, chapter, character):
-    diceRoll = random.randint(1, 100)
-    print(f"Your chance to win is {book[chapter]['fight']} percent. You rolled a {diceRoll}")
-    if diceRoll <= book[chapter]['fight']:
-        return book[chapter]['win']
+    diceRolls = [random.randint(1, 100) for _ in range(character['level'])]
+    lowestRoll = min(diceRolls)
+    baseChance = monsters[book[chapter]['fight']]['baseChance']
+    toughness = monsters[book[chapter]['fight']]['toughness']
+    print(f"Your character is at level {character['level']}, so you get to roll {character['level']} dice.")
+    print(f"You need your lowest roll + the enemy's toughness ({toughness}) to be less than {baseChance} percent.")
+    print(f"You rolled {diceRolls} and your lowest roll is {lowestRoll}")
+    print(f"Your lowest roll + toughness is {lowestRoll + toughness}")
+    if lowestRoll + toughness <= baseChance:
+        character['experience'] += 1
+        if character['experience'] >= character['level'] * 3:
+            levelUp(character)
+        else:
+            neededExperience = character['level'] * 3 - character['experience']
+            print(f"You need {neededExperience} more experience points to level up.")
+        return 'win'
     else:
-        return book[chapter]['lose']
+        return 'lose'
 
 def playBook(book, chapter, character):
     while True:
@@ -170,7 +197,12 @@ def playBook(book, chapter, character):
                 chapterContent = book[chapter].get('chapterContent')
                 if chapterContent:
                     print(f"\n{chapterContent}\n")
-                chapter = processFight(book, chapter, character)
+                result = processFight(book, chapter, character)
+                if result == 'win':
+                    chapter = book[chapter]['validCommands'].get('win')
+                elif result == 'lose':
+                    chapter = book[chapter]['validCommands'].get('lose')
+                continue
             elif 'chapterContent' in book[chapter]:
                 command = lowerInput(book[chapter]['chapterContent'])
                 nextChapter = book[chapter]['validCommands'].get(command)
@@ -200,6 +232,7 @@ def startGame(book):
 def createCharacter():
     return {
         'level': 1,
+        'experience': 0,
         'gear': []
     }
     
