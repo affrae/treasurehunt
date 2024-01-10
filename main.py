@@ -38,10 +38,139 @@ treasureIsland = {
     'chapters': {
         'At the crossroads': {
             'chapterContent': """You are at a crossroad.
-You can go 'left' or 'right'""",
+You can go 'left' or 'right.
+There is also a fairly unused path leading to a 'forest'
+and almost never used path leading to a 'mountain'.""",
             'validCommands': {
                 'left': 'At the lake',
-                'right': 'At the chasm'
+                'right': 'At the chasm',
+                'forest': 'At the forest',
+                'mountain': 'At the mountain'
+            }
+        },
+        'At the forest': {
+            'chapterContent': """You are at the edge of a dense forest.
+You can 'enter' the forest or 'return' to the crossroads""",
+            'validCommands': {
+                'enter': 'In the forest',
+                'return': 'At the crossroads'
+            },
+            'search':{
+                'magic stone': "You find a magic stone hidden in the roots of a tree.",
+                'found': False
+            }
+        },
+        'In the forest': {
+            'chapterContent': """You are deep in the forest.
+You can 'explore' further or 'return' to the edge of the forest""",
+            'validCommands': {
+                'explore': 'Deep in the forest',
+                'return': 'At the forest'
+            },
+            'search':{
+                'ancient artifact': "You find an ancient artifact buried under leaves.",
+                'found': False
+            }
+        },
+        'Deep in the forest': {
+            'chapterContent': """You are deep in the forest.
+You can 'continue' exploring or 'return' to the edge of the forest""",
+            'validCommands': {
+                'continue': 'At the ancient tree',
+                'return': 'At the forest'
+            },
+            'search':{
+                'hidden treasure': "You find a hidden treasure behind a bush.",
+                'found': False
+            }
+        },
+        'At the ancient tree': {
+            'chapterContent': """You are at an ancient tree.
+You can 'climb' the tree or 'return' to the edge of the forest""",
+            'validCommands': {
+                'climb': 'On the tree',
+                'return': 'At the forest'
+            },
+            'search':{
+                'old scroll': "You find an old scroll at the base of the tree.",
+                'found': False
+            }
+        },
+        'On the tree': {
+            'chapterContent': """You are on the tree.
+You can 'jump' down or 'climb' down""",
+            'validCommands': {
+                'jump': 'Jumped from the tree',
+                'climb': 'At the ancient tree'
+            },
+            'search':{
+                'bird nest': "You find a bird nest with a golden egg.",
+                'found': False
+            }
+        },
+        'Jumped from the tree': {
+            'validCommands': {},
+            'gameEndReason': "You jumped from the tree and broke your leg.",
+            'didTheyWin': False
+        },
+        'At the mountain': {
+            'chapterContent': """You are at the base of a mountain.
+You can 'climb' the mountain or 'return' to the crossroads""",
+            'validCommands': {
+                'climb': 'On the mountain',
+                'return': 'At the crossroads'
+            },
+            'search':{
+                'cave entrance': "You find a hidden cave entrance.",
+                'found': False
+            }
+        },
+        'On the mountain': {
+            'chapterContent': """You are on the mountain.
+You can 'continue' climbing or 'return' to the base of the mountain""",
+            'validCommands': {
+                'continue': 'At the peak',
+                'return': 'At the mountain'
+            },
+            'search':{
+                'mountain flower': "You find a rare mountain flower.",
+                'found': False
+            }
+        },
+        'At the peak': {
+            'chapterContent': """You are at the peak of the mountain.
+You can 'descend' or 'stay' at the peak""",
+            'validCommands': {
+                'descend': 'On the mountain',
+                'stay': 'At the peak'
+            },
+            'search':{
+                'view': "You enjoy a breathtaking view from the peak.",
+                'found': False
+            }
+        },
+        'At the river': {
+            'chapterContent': """You are at a river.
+You can 'cross' the river or 'return' to the crossroads""",
+            'validCommands': {
+                'cross': 'Crossed the river',
+                'return': 'At the crossroads'
+            },
+            'search':{
+                'fishing rod': "You find a fishing rod on the river bank.",
+                'found': False
+            }
+        },
+        'Crossed the river': {
+            'chapterContent': """You crossed the river.
+You can 'continue' on your journey or 'return' to the river""",
+            'validCommands': {
+                'continue': 'At the crossroads',
+                'return': 'At the river'
+            },
+            'search':{
+                'oar': "You find a small boat oar on the other side of the river.",
+                'found': False
             }
         },
         'At the lake': {
